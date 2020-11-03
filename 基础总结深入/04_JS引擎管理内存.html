@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS 引擎管理内存</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var a = 3;
+    var b = { name: "EMT!!" };
+
+    /*
+    即使定义为 undefined ，obj全局变量来所占的内存也不会被释放
+    对应的所指向的对象，再成为垃圾对象后，由 垃圾回收器 回收 
+    */
+    b = undefined;
+    console.log(b);
+
+    /*
+    在函数执行结束后，变量 b 所占的内存空间会被自动释放
+    对应的所指向的对象，再成为垃圾对象后，由 垃圾回收器 回收 
+    */
+    function fn() {
+        var b = {};
+    }
+    fn();
+
+</script>
+
+</html>

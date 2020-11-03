@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数的执行</title>
+</head>
+
+<body>
+
+
+</body>
+<script>
+    /* `函数名.apply/call(obj)` 让该函数临时成为 obj 对象的方法属性执行 */
+    var obj = {};
+    function fn() {
+        this.name = "EMT!!";
+    }
+    // obj.fn(); //无法直接调用，因为函数 fn 不是 obj 对象的方法属性
+    // console.log(obj.name);
+    fn.call(obj); //让该函数临时成为 obj 对象的方法属性执行
+    console.log(obj.name); //EMT!!
+</script>
+
+</html>

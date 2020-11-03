@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>访问对象的内部属性</title>
+</head>
+
+<body>
+</body>
+
+<script>
+    /* 两种方式的对比 */
+    var obj = {
+        name: "Tom",
+        age: 16,
+        setName: function (name) {
+            this.name = name;
+        },
+        setAge: function (age) {
+            this.age = age;
+        }
+    };
+    /* 方式1：通过 **.运算符**访问属性：编码简单，但不通用  */
+    obj.setName("EMT!!");
+    console.log(obj.name); //EMT!!
+    /* 方式2：通过 **['属性名']** 访问属性：编码复杂，但通用 */
+    obj['setAge'](17);
+    console.log(obj['age']); //17
+
+    /* 使用['属性名']访问属性的情况 */
+    /* 情况1：属性名中保存特殊字符时 */
+    var obj = {};
+    // obj.context-type = "text/json"; //包含特殊字符-,无法使用 .运算符直接访问
+    obj['context-type'] = 'text/json';
+    console.log(obj['context-type']); //text/json
+    /* 情况2：属性名不确定 */
+    var propName = "name";
+    // obj.propName = "ABC"; //这样保存的数据，属性名是 propName，而不是 name
+    obj[propName] = "ABC";
+    console.log(obj[propName]); //ABC
+
+</script>
+
+</html>

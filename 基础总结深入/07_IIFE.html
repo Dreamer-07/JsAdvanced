@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIFE - 匿名函数自调用</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    /* 匿名函数自调用 */
+    (function () {
+        var a = 3;
+        //隐藏实现
+        function test() {
+            console.log(++a);
+        }
+        window.$ = function () { //对外暴露一个全局函数
+            return {
+                test: test
+            }
+        }
+    })();
+    var a = 7;
+    $().test(); //$ 是一个函数，执行后返回一个对象
+    console.log(a); //不污染全局命名空间
+</script>
+
+</html>

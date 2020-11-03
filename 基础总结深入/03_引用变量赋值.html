@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>引用变量赋值</title>
+</head>
+
+<body>
+
+</body>
+
+<script>
+    /* 1. 多个引用变量指向同一个对象，其中一个对象修改对象中的数据，其他所有引用变量读取的就是修改之后的数据 */
+    var a = { name: 'Tom' };
+    var b = a;
+    b.name = "EMT!!";
+    console.log(a.name);// EMT!!
+
+    /* 2. 多个引用变量指向同一个对象A，修改其中一个对象指向其他对象，其他所有引用变量依然指向对象A */
+    var c = { name: "EMT!!" };
+    var b = a;
+    b = { name: "Knight" };
+    console.log(a.name, b.name); //EMT!! Knight
+
+    /* 
+    3. JS 调用函数时传递变量参数时
+        理解1：使用的是 `值(基本值 / 地址值)传递`
+        理解2：可能是`值传递`，也可能是`引用传递(地址值)`
+    */
+    var a = 3;
+    function fn(a) {
+        a = a + 1;
+    }
+    console.log(a); //3
+</script>
+
+</html>

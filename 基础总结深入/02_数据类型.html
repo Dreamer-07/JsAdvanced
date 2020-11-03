@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02_数据类型</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    /* 
+    1. 实例与类型
+        - 实例:实例对象
+        - 类型:类型对象
+    */
+    function Person(name, age) { //构造函数 - 类型对象
+        this.name = name;
+        this.age = age;
+    }
+    var p = new Person("EMT!!!", 16); //通过类型创建出来的对象变量 - 实例对象
+
+    //2. undefined & null 的区别
+    var a;
+    console.log(a); //undefined 定义了变量但未赋值
+    var b = null;
+    console.log(b); //null 定义了变量但赋值为 null
+
+    //3. null 的使用
+    //3.1 初始化引用对象变量
+    var person = null;
+    //3.2 赋值引用对象变量
+    person = Person("EMT!!!", 16);
+    //3.3 结束时赋值为null回收对象
+    person = null;
+</script>
+
+</html>

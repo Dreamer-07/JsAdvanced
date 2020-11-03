@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>常见的回调函数</title>
+</head>
+
+<body>
+    <button id="btn">测试回调函数</button>
+</body>
+<script>
+    var btn = document.querySelector("#btn");
+
+    //1. dom事件回调函数
+    btn.onclick = function () {
+        alert(this.innerHTML);
+    };
+
+    //2. 定时器回调函数
+    setTimeout(function () {
+        alert("定时器回调函数")
+    }, 2000)
+</script>
+
+</html>
