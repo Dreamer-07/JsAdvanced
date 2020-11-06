@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01_变量提升和函数提升</title>
+</head>
+<body>
+    
+<script>
+    /* 
+    变量声明提升，通过 var 定义(声明)的变量，在定义语句之前就可以访问，值为 `undefined`
+    函数声明提升，通过 function 声明的函数，在之前就可以直接调用，值为 函数定义(对象)
+    */
+   console.log(a); //undefinde - 访问 var 定义的变量,但是值为 undefined
+   var a = 3;
+
+   console.log(test1);; //Aaaa - 访问 function 声明的函数，值为函数定义
+   function test1(){
+       console.log("Aaaa"); 
+   }
+
+   console.log(test2); //undefined - 通过 var 声明的函数也无法在定义之前使用 
+   var test2 = function(){
+       console.log("test2()...");
+   }
+</script>
+</body>
+</html>

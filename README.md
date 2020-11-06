@@ -1,4 +1,4 @@
-# 第一章 基础总结深入
+第一章 基础总结深入
 
 ## 1.1 数据类型
 
@@ -28,6 +28,51 @@
 3. === / ==
    - 支持判断的数据类型：undefined / null
 
+```javascript
+//1. 基本数据类型
+//1.1 undefined
+var a;
+// typedef 返回对应数据类型的字符串
+console.log(a, typeof a); //undefined "undefined"
+console.log(undefined === 'undefined'); //false
+// 使用 === 和  typedef 判断 undefined 数据类型
+console.log(typeof a === 'undefined', a === undefined); //true true
+//1.2 number
+a = 4;
+console.log(typeof a, typeof a === 'number'); //'number' true
+//1.3 string
+a = '巴御前';
+console.log(typeof a, typeof a === 'string'); //'string' true
+//1.4 boolean
+a = false;
+console.log(typeof a, typeof a === 'boolean'); //'boolean' true
+//1.5 null
+a = null;
+console.log(typeof a, a === null); // 'object' true - 不能使用typeof进行判断，因为其类型为 null
+
+console.log("----------2 引用数据类型");
+//2. 引用数据类型
+var b1 = {
+    b2: [1, 'emt', console.log],
+    b3: function () {
+        console.log('emt!!!!');
+        return function () {
+            return "OHHHHH";
+        };
+    }
+};
+console.log(typeof b1, b1 instanceof Object, b1 === Object); //object true false
+console.log(typeof b1.b2, b1.b2 instanceof Array, b1.b2 instanceof Object); //object true true
+console.log(typeof b1.b3, b1.b3 instanceof Function, // function true
+            b1.b3 instanceof Object, typeof b1.b3 === 'function'); // true true
+
+console.log(typeof b1.b2[2] === 'function'); // true
+b1.b2[2]("巴御前"); //'巴御前'
+console.log(b1.b3()()); // OHHHHH
+```
+
+
+
 ### 1.1.3 类型 / 实例 对象
 
 ```js
@@ -44,6 +89,22 @@ var p = new Person("EMT!!!", 16); //通过类型创建出来的对象变量 - �
 ```
 
 ### 1.1.4 undefined & null
+
+```javascript
+//2. undefined & null 的区别
+var a;
+console.log(a); //undefined 定义了变量但未赋值
+var b = null;
+console.log(b); //null 定义了变量但赋值为 null
+
+//3. null 的使用
+//3.1 初始化引用对象变量
+var person = null;
+//3.2 赋值引用对象变量
+person = Person("EMT!!!", 16);
+//3.3 结束时赋值为null回收对象
+person = null;
+```
 
 #### 二者的区别
 
@@ -386,6 +447,357 @@ function Person(color) {
     fun1();  //this ==> window
 ```
 
+# 第二章 函数高级
+
+## 2.1 原型与原型链
+
+### 2.1.1 原型 prototype
+
+1. 函数的 prototype 属性
+
+   ![image-20201103164723084](README.assets/image-20201103164723084.png)
+
+   - 每个函数都有一个 `prototype` 属性，默认指向一个 Object 空对象(也称为原型对象)
+
+     该对象为 **Object 实例对象**，为对应函数创建出来的实例对象提供**方法**
+
+   - **Object 空对象：** 一个函数的原型对象中没有我们自定义的属性
+
+   - 原型对象中有一个 `constructor` ，指向函数对象
+
+2. 给构造函数的原型对象添加属性(一般是方法) ==> 实例对象可以访问
+
+   - 作用：**构造**函数的所有**实例**对象自动拥有原型中的属性(方法)
+
+   - 代码
+
+     ```javascript
+     /* 
+     每一个函数的都有一个 prototype 属性,默认指向一个 Object空对象
+         - 该对象是 Object 的实例对象，为对应函数创建出来的实例对象提供方法
+         */
+     console.log(Date.prototype,typeof Date.prototype);
+     
+     /* 
+     Object 空对象：一个函数的原型对象中没有我们自定义的属性 
+     */
+     function fn(){
+         consoel.log(1);
+     }
+     console.log(fn.prototype);
+     
+     //向自定义函数的原型对象添加一个方法
+     fn.prototype.test = function(){
+         alert(1);
+     }
+     console.log(fn.prototype);
+     
+     /* 原型对象中有一个 constructor 属性，指向它的函数对象 */
+     console.log(Date.prototype.constructor,Date.prototype.constructor === Date); //true
+     console.log(fn.prototype.constructor,fn.prototype.constructor === fn); //true
+     
+     /* 给构造函数的原型对象添加属性(一般是方法) ==》实例对象可以访问  */
+     function Fn(){
+         console.log("Fn()...");
+     }
+     Fn.prototype.test = function(){
+         console.log("Test()...");
+     }
+     var fn = new Fn(); //Fn()....
+     fn.test(); //Test()....
+     ```
+
+### 2.1.2 显式原型和隐式原型
+
+- 每个函数 function 都有一个 `prototype` ，即**显式原型**(属性)
+
+- 每个实例对象都有一个 `__proto__`，即 **隐式原型**(属性)
+
+- 实例对象的隐式原型属性和对应构造函数的显示原型属性相同 
+
+  ```javascript
+  //1. 每个函数 function 类对象都有一个 prototype ，即显示原型(属性)
+  function Fn(){
+  }
+  console.log(Fn.prototype);
+  
+  //2. 每个实例对象都有一个__proto__,即隐式原型(属性)
+  var fn = new Fn();
+  console.log(fn.__proto__);
+  
+  //3. 实例对象的隐式原型和对应构造函数的显式原型相同
+  console.log(Fn.prototype == fn.__proto__); //true
+  ```
+
+- 总结
+
+  1. 函数的 `prototype` 属性：在定义函数时自动添加的，默认值是一个空 Object 对象
+  
+     但 Object() 构造函数对象的显式原型并不是 Object 实例对象
+  
+     ```javascript
+     console.log(Object.prototpype instanceof Object); //false
+     ```
+  
+  2. 实例对象的 `__proto__` 属性：创建对象时自动添加的，默认值为构造函数的 `prototype` 属性
+  
+     注意：函数也是一个实例，它是 Function 的实例对象，所以也具有 `__proto__` 属性
+  
+  3. 在 **ES6** 之前，可以直接操作**显式原型**，但不能直接操作**隐式原型**
+  
+  4. 通过实例对象调用方法时：
+  
+     会先访问对象本身是否具有对应的属性
+  
+     如果没有就通过 `__proto__` 属性查看原型对象是否有对应的属性(方法)
+  
+     ```javascript
+     //添加函数的显式原型属性(方法)
+     Fn.prototype.test = function(){
+         console.log("Test()...");
+     }
+     /*
+     通过实例对象调用对应的方法
+     其原理是：先访问对象本身是否具有对应的属性(方法)
+     		如果没有就通过 __proto__ 隐式原型属性查看是否有对应的属性(方法)
+     */
+     fn.test(); //Test()...
+     ```
+
+### 2.1.3 原型链
+
+#### 原型链
+
+- 访问一个对象的属性时
+
+  ```javascript
+  function Fn(){
+      this.test1 = function(){
+          console.log("Test1()");
+      } 
+  }
+  var fn = new Fn();
+  Fn.prototype.test2 = function(){
+      console.log("Test2()");
+  }
+  
+  fn.test1();
+  fn.test2();
+  console.log(fn.toString());
+  // fn.test3(); //error: test3 in not function
+  ```
+
+  1. 先在自身属性中查找，找到返回 
+
+  2. 如果没有，再沿着 `__proto__` 找到对应的隐式原型对象，形成一条 **链**，找到返回
+
+  3. Object 构造函数的 `prototype` 属性为 Object 原型对象，该对象中包含了需要基础的方法
+
+     但同时，该对象的 `_proto__` 属性为 null
+
+  4. 如果最终都没有找到，则返回 undefined
+
+  5. 原型链的尽头就是 Object 的原型对象
+
+     ```javascript
+     console.log(Object.prototype.__proto__); //null
+     ```
+
+- 别名：**隐式**原型链
+
+- 作用：查找对象的属性(方法)
+
+- ![image-20201105110848916](README.assets/image-20201105110848916.png)
+
+#### 构造函数 / 原型 / 实体对象的关系
+
+- 图解1
+
+  <img src="README.assets/image-20201105134325107.png" alt="image-20201105134325107" style="zoom: 33%;" />
+
+- 图解2
+
+  <img src="README.assets/image-20201105140845229.png" alt="image-20201105140845229" style="zoom: 50%;" />
+
+- 所有函数的都是 **Function** 的实例，包括 Function() 本身，
+
+  所以 **Fcuntion.\__proto__ == Fcuntion.prototype** 
+
+  ```javascript
+  function A(){}
+  function B(){}
+  console.log(A.__proto__ === B.__proto__); //true - 所有函数的 __proto__ 属性都是一样的
+  console.log(Object.__proto__ === Function.prototype); //true - Object构造函数也是，都是 Function.prototype
+  console.log(Function.prototype === Function.__proto__); //true - Fcuntion = new Function();
+  ```
+
+#### 属性问题
+
+- 读取对象的属性值，会自动到原型链中查找
+
+- 设置对象的属性值，不会查找原型链，如果当前对象中没有该属性，就会直接添加该属性并设置其值
+
+- 方法一般定义在**原型**中，属性一般通过构造函数定义在**对象本身**上
+
+- ```javascript
+  /* 
+  - 读取对象的属性值，会自动到原型链中查找
+  - 设置对象的属性值，不会查找原型链，如果当前对象中没有该属性，就会直接添加该属性并设置其值
+  - 方法一般定义在**原型**中，属性一般通过构造函数定义在**对象本身**上
+  */
+  
+  /* 
+  - 读取对象的属性值，会自动到原型链中查找
+  - 设置对象的属性值，不会查找原型链，如果当前对象中没有该属性，就会直接添加该属性并设置其值
+  */
+  function Fn(){}
+  var f1 = new Fn();
+  f1.__proto__.a = "AAA";
+  var f2 = new Fn();
+  console.log(f1.a,f2.a,f1); //AAA AAA
+  f2.a = "BBB";
+  console.log(f1.a,f2.a,f2); //AAA BBB
+  
+  /* 
+  - 方法一般定义在**原型**中，属性一般通过构造函数定义在**对象本身**上
+  */
+  function Person(name,age){
+      this.name = name;
+      this.age = age;
+  }
+  Person.prototype.setName = function(name){
+      this.name = name
+  }
+  var p1 = new Person("EMT!",16);
+  var p2 = new Person("Knight",20)
+  p2.setName("77777");
+  console.log(p1.name,p2.name,p1,p2); //EMT! 77777
+  ```
+
+### 2.1.4 探索 instanceof 
+
+- 表达式：A(实例对象) instanceof B(构造函数对象)
+
+- 作用：如果 B 函数的**显式原型对象**在 A 对象的**原型链**上，返回 true，否则返回 false
+
+- ```javascript
+  //案例1
+  function Fun(){}
+  var f1 = new Fun();
+  console.log(f1 instanceof Fun) //true
+  console.log(f1 instanceof Object); //true
+  
+  console.log(  );
+  
+  //案例2
+  console.log(Object instanceof Function); //true
+  console.log(Object instanceof Object); //true
+  console.log(Function instanceof Function); //true
+  console.log(Function instanceof Object); //true
+  
+  function Foo(){ }
+  console.log(Object instanceof Foo); //false
+  ```
+
+- 案例 2 图解
+
+  ![JS高级之探索instanceof_qiuqiudongdong的博客-CSDN博客](https://img-blog.csdnimg.cn/20201010154638777.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FpdXFpdWRvbmdkb25n,size_16,color_FFFFFF,t_70)
+
+### 2.1.5 面试题
+
+```javascript
+// 测试题1
+var A = function(){ }
+A.prototype.n = 1;
+var b = new A();
+
+A.prototype = {
+    n:2,
+    m:3
+}
+
+var c = new A();
+console.log(b.n ,b.m ,c.n ,c.m); 
+
+// 测试题2
+Object.prototype.a = function(){
+    console.log('a()');
+}
+
+Function.prototype.b = function(){
+    console.log("b()")
+}
+var f = new F();
+f.a() 
+// f.b() 
+F.a() 
+F.b() //b()
+```
+
+## 2.2 执行上下文与执行上下文栈
+
+### 2.2.1 变量提升与函数提升 
+
+1. 变量声明提升，通过 var 定义(声明)的变量，在定义语句之前就可以访问，值为 `undefined`
+
+2. 函数声明提升，通过 function 声明的函数，在之前就可以直接调用，值为 **函数定义(对象)**
+
+   但使用 var 声明的函数，在定义语句之前，值也是`undefined`
+
+### 2.2.2 执行上下文
+
+> 代码分类 - 根据位置
+>
+> - 全局代码
+> - 局部代码
+
+#### 全局执行上下文 (执行全局代码前的步骤)
+
+- 在执行全局代码前将 **window** 确定为全局执行上下文
+
+- 对全局数据进行预处理
+  - var 定义的全局变量赋值为 undefined，添加为 **window** 的属性
+  - function 声明的全局函数赋值为**函数定义(对象)**，添加为 **window** 的方法
+  - **this ==> (赋值) window**
+
+- 开始执行全局代码
+
+#### 函数执行上下文
+
+- 在调用函数时，准备执行函数体之前，创建对应的**函数执行上下文对象(虚拟的)**
+
+- 对局部数据进行预处理
+
+  - 将实参赋值给形参，并添加形参为执行上下文属性
+
+  - 将**实参列表**，赋值给 **arguments** 属性(伪数组)，添加该属性为执行上下文属性
+
+    ![image-20201105202633521](README.assets/image-20201105202633521.png)
+
+  - var 定义的局部变量赋值为 undefined，添加为执行上下文属性
+
+  - function 声明的局部函数赋值为 **函数定义(对象)**，添加执行上下文的方法
+
+  - **this ==> (赋值) 调用函数的对象**
+
+- 开始执行函数体代码
+
+### 2.2.3 执行上下文栈
+
+1. 在全局代码执行前，JS 引擎会创建一个栈用来存储管理所有的**执行上下文对象**
+2. 在全局执行上下文(**window**)确定之后，将其添加到栈中(**压栈**)
+3. 在函数执行上下文创建后，将其添加到栈中(**压栈**)
+4. 在当前函数执行完后，将栈顶的对象移出(**出栈**)
+5. 当所有代码执行完后，栈中只剩下 **window**
+
+![image-20201106090810184](README.assets/image-20201106090810184.png)
+
+
+
+## 2.3 作用域与作用域链
+
+## 2.4 闭包
+
 # 第五章 补充
 
 ## 5.1 分号问题
@@ -410,7 +822,3 @@ function Person(color) {
 
   - 合并：将多个 JS 文件合并成一个 JS 文件
   - 压缩：将 JS 文件中多余的空格，换行等不需要的东西删除，同时将函数名替换成简单的 abcd...(在没有和变量名冲突的情况下)，不影响使用
-
-
-
-  

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02_执行上下文栈</title>
+</head>
+<body>
+    
+<script>
+    /*
+    执行上下文栈的操作： 
+        1. 在全局代 码执行前，JS 引擎会创建一个栈用来存储管理所有的**执行上下文对象**
+        2. 在全局执行上下文(**window**)确定之后，将其添加到栈中(**压栈**)
+        3. 在函数执行上下文创建后，将其添加到栈中(**压栈**)
+        4. 在当前函数执行完后，将栈顶的对象移出(**出栈**)
+        5. 当所有代码执行完后，栈中只剩下 **window**
+     */
+    //全局执行上下文
+    var a = 10;
+    var bar = function(x){
+        //函数执行上下文
+        var b = 5;
+        foo(x + b);
+    }
+
+    var foo = function(y){
+        //函数执行上下文
+        var c = 5;
+        console.log(a + c + y); 
+    }
+    bar(10);
+
+    /* 
+    判断以下代码依次输出什么？
+    整个过程中产生了几个执行上下文？ 5
+    */
+    console.log('global begin:' + i); // undefined
+    var i = 1;
+    foo(i);
+    function foo(i){
+        if(i == 4){
+            return;
+        }
+        console.log('foo() begin:' + i); //1 2 3 
+        foo(i + 1); //递归调用 - 在函数内部调用自己
+        console.log("foo() end:" + i); //3 2 1
+    }
+    console.log('global end:' + i); //1
+</script>
+</body>
+</html>

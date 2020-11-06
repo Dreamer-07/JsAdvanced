@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01_函数原型prototype属性</title>
+</head>
+<body>
+</body>
+<script>
+    /* 
+    每一个函数的都有一个 prototype 属性,默认指向一个 Object空对象
+        - 该对象是 Object 的实例对象，为对应函数创建出来的实例对象提供属性(方法)
+    */
+    console.log(Date.prototype,typeof Date.prototype);
+
+    /* 
+    Object 空对象：一个函数的原型对象中没有我们自定义的属性 
+    */
+    function fn(){
+        consoel.log(1);
+    }
+    console.log(fn.prototype);
+
+    //向自定义函数的原型对象添加一个方法
+    fn.prototype.test = function(){
+        alert(1);
+    }
+    console.log(fn.prototype);
+
+    /* 原型对象中有一个 constructor 属性，指向它的函数对象 */
+    console.log(Date.prototype.constructor,Date.prototype.constructor === Date); //true
+    console.log(fn.prototype.constructor,fn.prototype.constructor === fn); //true
+
+    /* 给构造函数的原型对象添加属性(一般是方法) ==》实例对象可以访问  */
+    function Fn(){
+        console.log("Fn()...");
+    }
+    Fn.prototype.test = function(){
+        console.log("Test()...");
+    }
+    var fn = new Fn(); //Fn()....
+    fn.test(); //Test()....
+
+
+    
+</script>
+</html>

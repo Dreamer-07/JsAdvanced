@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05_探索instanceof</title>
+</head>
+<body>
+
+<script>
+    /* 
+    表达式：A instanceof B
+    作用：如果 B 函数的显式原型对象在 A 对象的原型链上，返回 true，否则返回 false
+    */
+
+   //案例1
+   function Fun(){}
+   var f1 = new Fun();
+   console.log(f1 instanceof Fun) //true
+   console.log(f1 instanceof Object); //true
+
+    console.log(  );
+
+   //案例2
+   console.log(Object instanceof Function); //true
+   console.log(Object instanceof Object); //true
+   console.log(Function instanceof Function); //true
+   console.log(Function instanceof Object); //true
+
+   function Foo(){ }
+   console.log(Object instanceof Foo); //false
+</script>
+</body>
+</html>

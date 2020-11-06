@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>06_面试题</title>
+</head>
+<body>
+
+<script>
+    // 测试题1
+    var A = function(){ }
+    A.prototype.n = 1;
+    var b = new A();
+
+    A.prototype = {
+        n:2,
+        m:3
+    }
+
+    var c = new A();
+    console.log(b.n ,b.m ,c.n ,c.m); //2 undefined 2 3
+
+    // 测试题2
+     //Object 原型对象添加属性 a
+    Object.prototype.a = function(){
+        console.log('a()');
+    }
+    //Function 显式原型对象添加属性 b - Function原型对象.__proto__ == Object原型对象
+    Function.prototype.b = function(){
+        console.log("b()")
+    }
+    var f = new F();
+    f.a() //a()
+    // f.b() //b is not function
+    F.a() //a()
+    F.b() //b()
+</script>
+</body>
+</html>

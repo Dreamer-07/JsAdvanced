@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02_显示原型与隐式原型</title>
+</head>
+<body>
+    
+<script>
+    //1. 每个函数 function 类对象都有一个 prototype ，即显示原型(属性)
+    function Fn(){
+        
+    }
+    console.log(Fn.prototype);
+
+    //2. 每个实例对象都有一个__proto__,即隐式原型(属性)
+    var fn = new Fn();
+    console.log(fn.__proto__);
+
+    //3. 实例对象的隐式原型和对应构造函数的显式原型相同
+    console.log(Fn.prototype == fn.__proto__); //true
+
+    //添加函数的显式原型属性(方法)
+    Fn.prototype.test = function(){
+        console.log("Test()...");
+    }
+    /*
+    通过实例对象调用对应的方法
+    其原理是：先访问对象本身是否具有对应的属性(方法)
+               如果没有就通过 __proto__ 隐式原型属性查看是否有对应的属性(方法)
+    */
+    fn.test(); //Test()...
+</script>
+</body>
+</html>
