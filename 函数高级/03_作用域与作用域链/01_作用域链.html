@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01_作用域链</title>
+</head>
+<body>
+<script>
+    /* 
+    查找变量的规则
+    1. 在**当前作用域**下的**执行上下文**中查找对应的属性，如果由直接返回，否则进入2
+    2. 在**上一级作用域**的执行上下文查找对应的属性，如果由直接返回，否则进入3
+    3. 再次执行2的相同操作，直到**全局作用域**，如果还找不到就抛出找不到异常
+    */
+    var a = 1;
+    function f1(){
+        var b = 2;
+        function f2(){
+            var c = 3;
+            console.log(c); //3
+            console.log(b); //2
+            console.log(a); //1
+            console.log(d); //报错
+        }
+        f2();
+    }
+    f1();
+</script>
+</html> 

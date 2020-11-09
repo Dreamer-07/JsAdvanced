@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01_遍历加监听</title>
+</head>
+<body>
+    <button class="btn">按钮1</button>
+    <button class="btn">按钮2</button>
+    <button class="btn">按钮3</button>
+<script>
+    var btns = document.querySelectorAll(".btn");
+    //为每个 btn 绑定对应的单击时间
+    var length = btns.length; //伪数组的 length 属性是动态的，这里先获取以固定
+    //利用闭包解决单击事件
+    for(var i = 0;i < length;i++){
+        (function(i){ //接收形参 i
+            var btn = btns[i];
+            btn.onclick = function(){
+                alert("这是第"+(i+1)+"个");
+            }
+        })(i); //传入实参 i
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>97_测试题</title>
+</head>
+<body>
+<script>
+    // 测试题1
+    var name = "The Window"
+    var obj = {
+        name: "My Object",
+        getNameFunc : function(){
+            return function(){
+                return this.name;
+            };
+        }
+    }
+    alert(obj.getNameFunc()())
+    /* 
+    The Window - 当 obj.getNameFunc() 执行后返回的是一个函数对象
+                 该对象由 window 调用，所以打印 window 对象的 name 属性
+    */
+
+
+    // 测试题2
+    var name2 = "The Window";
+    var object2 = {
+        name2 : "My Object",
+        getNmaeFunc : function(){
+            var that = this;
+            return function(){
+                return that.name2;
+            }
+        }
+    }
+    alert(object2.getNmaeFunc()()); //My Object
+</script>
+</body>
+</html>
