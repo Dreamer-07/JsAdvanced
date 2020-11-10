@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03_组合继承</title>
+</head>
+<body>
+<!-- 
+方式3：组合继承
+    套路：方式1 + 方式2
+-->
+<script>
+    // 定义父类型构造函数
+    function Person(name,age){
+        this.name = name;
+        this.age = age;
+    }
+    // 给父类型的原型添加方法
+    Person.prototype.setName = function(name){
+        this.name = name;
+    }
+
+    //定义子类型
+    function Student(name,age,price){
+        //使用 call 调用父类型构造函数
+        Person.call(this,name,age)
+        this.price = price;
+    }
+    //定义子类型的原型对象为父类型的实例对象
+    Student.prototype = new Person();
+    //设置子类型的原型的 constructor 属性为子类型
+    Student.prototype.constructor = Student;
+    //给子类型的原型添加方法
+    Student.prototype.setPrice = function(price){
+        this.price = price;
+    }
+    
+    //创建子类型实例对象
+    var student = new Student("EMT!!",16,16000);
+    console.log(student);
+    //调用方法
+    student.setName("巴御前");
+    student.setPrice(50000);
+    console.log(student);
+</script>
+</body>
+</html>

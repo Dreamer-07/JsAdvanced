@@ -1,5 +1,5 @@
 //05_闭包的应用_自定义JS模块 - 使用方式2
-(function(window){
+;(function(window){
     //定义私有数据
     var msg = 'EMT!!';
     //定义操作私有数据的函数

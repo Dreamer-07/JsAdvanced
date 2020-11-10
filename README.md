@@ -1036,7 +1036,8 @@ showDelay("巴御前！",2000)
 2. (**推荐**)使用匿名函数，为 `window` 设置一个对外暴露的对象
 
    ```javascript
-   (function(window){
+   //这里在行首加上;，防止合并压缩时出错
+   ;(function(window){
        //定义私有数据
        var msg = 'EMT!!';
        //定义操作私有数据的函数
@@ -1062,6 +1063,228 @@ showDelay("巴御前！",2000)
 - 解决
   1. 能不用闭包就不用
   2. 及时释放
+
+# 第三章 面向对象高级
+
+## 3.1 对象创建模式
+
+1. 方式一：`Object` 构造函数模式
+
+   - 套路：先创建空 Object 对象，再动态添加属性 / 方法
+
+   - 使用场景：起始时**不确定对象内部数据**
+
+   - 问题：语句太多
+
+   - ```javascript
+     var a = new Object();
+     a.name = "EMT!!";
+     a.age = 12;
+     ```
+
+2. 方式二：对象字面量模式
+
+   - 套路：使用 {} 创建对象，**同时**指定属性 / 方法
+
+   - 适用场景：起始时对象**内部数据是确定**的
+
+   - 问题：如果创建多个对象，有重复代码
+
+   - ```javascript
+     var a = {
+         name:"EMT!!",
+         age:12
+     }
+     ```
+
+3. 方式三：工厂模式
+
+   - 套路：通过**工厂函数**(返回一个对象的函数)动态创建对象并返回
+
+   - 适用场景：需要创建多个对象
+
+   - 问题：对象没有一个具体的类型，都是 `Object` 类型
+
+   - ```javascript
+     function createPerson(name,age){
+         var obj = {
+             name: name,
+             age: age
+         }
+         return obj;
+     }
+     var p = createPerson("Tom",12);
+     ```
+
+4. 方式四 - 自定义构造函数模式
+
+   - 套路：自定义 **构造函数**，通过 `new` 关键字创建对象
+
+   - 使用场景：需要创建多个**类型确定**的对象
+
+   - 问题：每个对象都有相同的数据，浪费内存
+
+   - ```javascript
+     function Person(name,age){
+         this.name = name;
+         this.age = age;
+         this.setName = function(name){
+             this.name = name;
+         }
+     }
+     //两个对象不同但都有相同的数据(方法)，浪费内存
+     var p1 = new Person("Jack",12);
+     var p2 = new Person("Tom".,16);
+     ```
+
+5. 方式五 - 构造函数 + 原型的组合模式
+
+   - 套路：自定义构造函数，属性在函数中初始化，方法添加到**显式原型**中
+
+   - 使用场景：需要创建多个类型确定的对象
+
+   - ```javascript
+     //属性在函数中初始化
+     function Person(name,age){
+         this.name = name;
+         this.age = age;
+     }
+     //方法添加到 显式原型 中
+     Person.prototype.setName = function(name){
+         this.name = name;
+     }
+     var p1 = new Person("Jack",23);
+     var p2 = new Person("Tom",24);
+     ```
+
+     
+
+## 3.2 继承模式
+
+### 3.2.1 原型链继承
+
+- 套路
+
+  1. 定义父类型的构造函数
+  2. 给父类型的原型添加方法
+  3. 定义子类型的构造函数
+  4. **(关键)创建父类型的对象赋值给子类型的原型**
+  5. 设置子类型的原型的 `constructor` 属性指向子类型
+  6. 给子类型的原型添加方法
+  7. 创建子类型的对象调用父类型的方法
+
+- 关键
+
+  **子类型的原型为父类型的一个实例对象**
+
+- 代码
+
+  ```javascript
+  //定义父类型的构造函数
+  function Person(){
+      perInfo = "show perInfo"
+  }
+  //给父类型的原型添加方法
+  Person.prototype.showPer = function(){
+      console.log(perInfo);
+  }
+  
+  //定义子类型的构造函数
+  function Student(){
+      stuInfo = "show stuInfo"
+  }
+  //创建父类型的对象赋值给子类型的原型
+  Student.prototype = new Person();
+  //设置子类型的 constructor 属性指向子类型
+  Student.prototype.constructor = Student;
+  //给子类型的原型添加方法
+  Student.prototype.showStu = function(){
+      console.log(stuInfo);
+  }
+  //创建子类型的对象调用父类型的方法  
+  var stu1 = new Student();
+  stu1.showPer();
+  stu1.showStu();
+  ```
+
+- 图解
+
+  ![原型链继承](README.assets/原型链继承.png)
+
+### 3.2.2 借用构造函数继承
+
+> 虚伪的
+
+- 套路
+
+  1. 定义父类型构造函数
+  2. 定义子类型构造函数
+  3. 在子类型构造函数中调用父类型构造
+
+- 关键
+
+  - 在子类型构造函数中调用 call() 调用父类型构造函数
+
+- 代码
+
+  ```javascript
+  function Person(name,age){
+      this.name = name;
+      this.age = age;
+  }
+  
+  function Student(name,age,price){
+      Person.call(this,name,age); //this.Person(name,age)
+      this.price = price;
+  }
+  
+  var p1 = new Student("emt!!",16,14000);
+  ```
+
+### 3.2.3 组合继承
+
+> 使用 原型链 + 构造函数
+
+- 代码
+
+  ```javascript
+  // 定义父类型构造函数
+  function Person(name,age){
+      this.name = name;
+      this.age = age;
+  }
+  // 给父类型的原型添加方法
+  Person.prototype.setName = function(name){
+      this.name = name;
+  }
+  
+  //定义子类型
+  function Student(name,age,price){
+      //使用 call 调用父类型构造函数
+      Person.call(this,name,age)
+      this.price = price;
+  }
+  //定义子类型的原型对象为父类型的实例对象
+  Student.prototype = new Person();
+  //设置子类型的原型的 constructor 属性为子类型
+  Student.prototype.constructor = Student;
+  //给子类型的原型添加方法
+  Student.prototype.setPrice = function(price){
+      this.price = price;
+  }
+  
+  //创建子类型实例对象
+  var student = new Student("EMT!!",16,16000);
+  console.log(student);
+  //调用方法
+  student.setName("巴御前");
+  student.setPrice(50000);
+  console.log(student);
+  ```
+
+  
+
+# 第四章 线程机制与事件机制
 
 # 第五章 补充
 
