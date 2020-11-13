@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03_WebWorkers(测试)</title>
+</head>
+<body>
+<input type="text" id="number" placeholder="数值"/>
+<button id="btn">计算</button>
+<script>
+
+    var inp = document.querySelector("#number");
+    document.querySelector("#btn").onclick = function(){
+        var value = inp.value;
+        var result = fibonacci(value);
+        alert(result);
+    }
+</script>
+</body>
+</html>

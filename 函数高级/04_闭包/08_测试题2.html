@@ -7,11 +7,12 @@
 </head>
 <body>
 <script>
+    /* 闭包只存在于对应的函数对象中 */
     function fun(n,o){
         console.log(o);
         return {
             fun:function(m){
-                //n = 0
+                // n = 0
                 return fun(m,n);
             }
         }

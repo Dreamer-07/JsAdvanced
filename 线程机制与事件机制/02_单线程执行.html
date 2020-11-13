@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02_单线程执行</title>
+</head>
+<body>
+<!-- 
+1. JS是单线程执行
+    - setTimeout() 的回调函数是在主线程执行的
+    - 定时器中的回调函数只有在运行栈中的代码全部执行完后才有可能执行
+2. 原因：
+    - JS是为了与用户进行交互而开发的语言，如果是多线程，还需要解决多线程的同步问题
+3. 代码的分类： 
+    1. 初始化代码
+    2. 回调代码
+4. JS 引擎执行代码的基本流程
+    - 先执行初始化代码：包含一些特别的代码
+        - 设置定时器
+        - 绑定监听
+        - 发送 ajax 请求
+    - 后面在某个时刻才会执行回调函数(异步执行)
+
+ -->
+<script>
+    setTimeout(function(){
+        console.log("AAA");
+        alert("setTimeout 2222")
+    },2000)
+    setTimeout(function(){
+        console.log("BBB");
+        alert("setTimeout 1111")
+    },1000)
+    setTimeout(function(){
+        //定时器的回调函数都在初始化代码执行后执行
+        console.log("CCC");
+    },0)
+    function fn(){
+        console.log("fn(),,,");
+    }
+    fn()
+    console.log("alert()之前");
+    alert("CC") //不仅会暂停主线程的执行，同时会暂停计时线程的执行
+    console.log("alert()之后");
+</script>
+</body>
+</html>

@@ -1282,9 +1282,279 @@ showDelay("巴御前！",2000)
   console.log(student);
   ```
 
-  
 
 # 第四章 线程机制与事件机制
+
+## 4.1 进程与线程
+
+- 线程(process)
+
+  - 程序的一次执行，占有一片**独有的内存空间**
+  - 可以通过 windows 任务管理器查看进程
+
+- 进程(thread)
+
+  - 是进程内的一个独立执行单元
+  - 是程序执行的一个完整流程
+  - 是 CPU 的最小调度单元
+
+- 图解
+
+  ![image-20201110111147998](README.assets/image-20201110111147998.png)
+  
+- 相关知识
+
+  1. 应用程序必须运行在某个进程的某个线程上
+  2. 一个进程中只要有一个**运行**的线程：**主线程**，进程启动后会自动创建
+  3. 一个进程也可以同时运行多个线程 - 多线程执行
+  4. 一个进程内的数据可以供其他的多个线程直接共享
+  5. 多个进程之内的数据时不能共享的
+  6. **线程池(thread pool):**保存多个线程对象的容器，实现线程对象的反复利用
+
+- 相关问题
+
+  - 多进程与多线程
+
+    - 多进程：一个应用程序可以同时启动多个实例运行
+    - 多线程：一个进程内，同时有多个线程运行
+
+  - 多进程与单线程
+
+    - 多进程
+      - 优点：能有效提高 CPU 利用率
+      - 缺点:
+        - **创建**多线程开销
+        - 线程间**切换**开销
+        - **死锁与状态同步问题**
+    - 单线程
+      - 优点：方便顺序程序编码
+      - 缺点：效率低
+
+  - JS 是**单线程**执行的
+
+    但 H5 中的 `Web Workers` 可以多线程运行
+
+  - 游览器是**多线程**运行的 
+
+    游览器中 `IE(旧版) FireFox` 是单进程的
+
+    `Chrome IE(新版)` 多进程的
+
+## 4.2 游览器内核
+
+> 支撑游览器运行的核心程序
+
+- 不同的游览器不一样
+
+  - Chrome , Safari：`webkit`
+
+  - firefox: `Gecko`
+
+  - IE：`Trident`
+
+  - 360,搜狗等国内游览器：`Trident + webkit`
+
+  - `Trident` 在**金钱交易**方面具有安全性，所以大多数银行的网站只支持 IE
+
+    国内的游览器在涉及交易时就会切换为 `Trident` 内核
+
+- 内核由多个模块组成
+
+  <img src="README.assets/image-20201111093015121.png" alt="image-20201111093015121" style="zoom:50%;" />
+
+## 4.3 定时器
+
+- 定时器的定时执行  
+  - 不能保证真正的定时执行
+  - 一般情况下会额外延迟一点，也有可能延长较长的时间
+- 定时器的回调函数是在 **主线程** 上执行的。JS 是单线程的
+- 定时器的具体实现：**事件循环模型**
+
+- 代码
+
+  ```javascript
+  var btn = document.querySelector("#btn");
+  btn.onclick = function(){
+      var start = Date.now(); //获取当前时间戳
+      console.log("启动定时器前");
+      setTimeout(function(){
+          console.log("定制器执行了",Date.now() - start);
+      },200)
+      console.log("启动定时器后");
+  
+      // 做一个长时间的工作 - 会导致定时器额外延长
+      for(var i = 1; i < 1000000000;i++){
+  
+      }
+  } 
+  ```
+
+## 4.4 JS 单线程执行
+
+> 在主线程执行的，但 JS 是单线程的
+
+- JS是单线程执行
+
+  - `setTimeout()` 的回调函数是在**主线程**执行的
+  - 定时器中的回调函数只有在 **运行栈** 中的代码全部执行完后才有可能执行
+
+- 原因：
+
+  JS是为了与用户进行交互而开发的语言，如果是多线程，还需要解决**多线程**的同步问题
+
+- 代码分类
+
+  1. 初始化代码
+  2. 回调代码
+
+- JS 引擎执行代码的基本流程
+
+  - 先执行初始化代码，包含一些特别的代码：
+    - 设置定时器
+    - 绑定监听
+    - 发送 `ajax` 请求
+  - 后面在某个时刻才会执行回调函数(异步代码)
+
+- 代码
+
+  ```javascript
+  setTimeout(function(){
+      console.log("AAA");
+      alert("setTimeout 2222")
+  },2000)
+  setTimeout(function(){
+      console.log("BBB");
+      alert("setTimeout 1111")
+  },1000)
+  setTimeout(function(){
+      //定时器的回调函数都在初始化代码执行后执行
+      console.log("CCC");
+  },0)
+  function fn(){
+      console.log("fn(),,,");
+  }
+  fn()
+  console.log("alert()之前");
+  alert("CC") //不仅会暂停主线程的执行，同时会暂停计时线程的执行
+  console.log("alert()之后");
+  ```
+
+- 注意：即使使用 `H5 Workeres` 多线程的语法，在同一时刻也只能有一个线程可以操作页面
+
+## 4.5 游览器的事件循环(轮询)模式
+
+- 模型原理图
+
+  ![img](README.assets/898684-20200421174601857-1537701411.png)
+
+- 重要概念
+
+  1. 执行栈：`execution stack`所有代码都在此空间中执行
+
+  2. 游览器内核
+
+     - JS 引擎模块 - 在主线程处理
+     - 其他模块 - 在主 / 分线程处理
+
+  3. 任务 & 消息 & 事件队列
+
+     都是同一个队列 `Callback Queue`
+
+  4. 事件轮询：
+
+     从 `Callback Queue`中循环取出 回调函数 放入执行栈中处理(一个接一个)
+
+  5. 事件驱动模型 `event-driven interaction model`
+
+     == 事件循环模型
+
+  6. 请求响应模型 `request-response model`
+
+  7. 代码分类
+
+     - 初始化代码(同步代码)：包含 **绑定 dom 事件监听，设置定时器，发送 Ajax 请求**
+     - 回调执行代码(异步代码)：处理回调逻辑
+
+  8. JS 引擎执行代码的基本流程：初始化代码 ==> 回调代码
+
+  9. 模型的 2 个组成部分
+
+     1. 事件管理模块 `Web APIs`
+     2. 回调队列 `Callback Queue`：包含着待处理的回调函数
+
+- 执行流程
+
+  - 执行初始化代码，将事件回调函数交给 **对应模块** 管理
+  - 当事件发生时，管理模块会将**回调函数及其数据添加到回调队列中**
+  - **只有当初始化代码执行完后**(可能需要一定时间)，才会**遍历读取**回调队列中的回调函数执行
+
+## 4.6 Web Workers(多线程)
+
+> 更多参考：https://juejin.im/post/6844903496550989837
+
+- 介绍
+  - `Web Workers` 是 HTML5 提供的一个 JavaScript 多线程解决方案
+  - 可以将一些大计算量的代码交由 `Web Worker` 运行而不冻结用户界面
+  - 子线程完全受主线程控制，且**不得操作 DOM**，所以这个新标准并不能改变 JavaScript 单线程的本质
+  
+- 使用
+  - 创建在分线程执行的 **JS 文件**
+  - 在主线程中的 JS 中发消息并设置回调
+  
+- 图解
+
+  ![image-20201112091344200](README.assets/image-20201112091344200.png)
+
+- 应用练习 
+
+  1. 在主线程中创建 `Worker`对象，并发送消息
+
+     ```javascript
+     var inp = document.querySelector("#number");
+     document.querySelector("#btn").onclick = function(){
+         var value = inp.value;
+     
+         var worker = new Worker("JS/worker.js"); //创建一个 Worker 对象
+         worker.onmessage = function(event){ //绑定一个接受消息的监听事件
+             console.log("主线程收到的信息" + event.data);
+         }
+         worker.postMessage(value); //发送数据给分线程
+         console.log("主线程：发送数据给分线程");
+     }
+     ```
+
+  2. 根据创建 `Worker`对象传入的路径创建一个 worker.js 文件
+
+     ```javascript
+     //分线程
+     //计算 斐波那契数列
+     function fibonacci(n){
+         return n<=2 ? 1 : fibonacci(n-1) + fibonacci(n-2)
+     }
+     
+     //1. 使用表达式定义一个函数，函数名固定为 onmessage
+     var onmessage = function(event){
+         //2. 处理数据
+         console.log("分线程：从主线程中接受的数据" + event.data);
+         var result = fibonacci(event.data);
+         //3. 返回数据
+         postMessage(result);
+     }
+     ```
+
+- 缺点
+
+  1. 慢
+
+  2. 不能跨域加载 JS
+
+  3. Worker内的代码无法访问 DOM
+
+     因为对应的全局对象不再是 `window`
+
+     ![image-20201112092043564](README.assets/image-20201112092043564.png)
+
+  4. 不是每个游览器都兼容该特性
 
 # 第五章 补充
 

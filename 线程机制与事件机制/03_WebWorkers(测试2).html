@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03_WebWorkers(测试2)</title>
+</head>
+<body>
+<input type="text" id="number" placeholder="数值"/>
+<button id="btn">计算</button>
+<script>
+    //计算 斐波那契数列
+    var inp = document.querySelector("#number");
+    document.querySelector("#btn").onclick = function(){
+        var value = inp.value;
+
+        var worker = new Worker("JS/worker.js"); //创建一个 Worker 对象
+        worker.onmessage = function(event){ //绑定一个接受消息的监听事件
+            console.log("主线程收到的信息" + event.data);
+        }
+        worker.postMessage(value); //发送数据给分线程
+        console.log("主线程：发送数据给分线程");
+    }
+</script>
+</body>
+</html>
